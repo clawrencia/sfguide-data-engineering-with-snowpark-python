@@ -22,7 +22,7 @@ WAREHOUSE = HOL_WH
 WHEN
   SYSTEM$STREAM_HAS_DATA('POS_FLATTENED_V_STREAM')
 AS
-CALL HARMONIZED.ORDERS_UPDATE_SP();
+CALL ORDERS_UPDATE_SP();
 
 CREATE OR REPLACE TASK DAILY_CITY_METRICS_UPDATE_TASK
 WAREHOUSE = HOL_WH
@@ -40,7 +40,7 @@ CALL ANALYTICS.DAILY_CITY_METRICS_UPDATE_SP();
 ALTER TASK DAILY_CITY_METRICS_UPDATE_TASK RESUME;
 EXECUTE TASK ORDERS_UPDATE_TASK;
 
-
+SHOW TASKS;
 -- ----------------------------------------------------------------------------
 -- Step #3: Monitor tasks in Snowsight
 -- ----------------------------------------------------------------------------

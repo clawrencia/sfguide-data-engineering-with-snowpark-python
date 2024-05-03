@@ -26,7 +26,6 @@ def create_orders_stream(session):
 
 def merge_order_updates(session):
     _ = session.sql('ALTER WAREHOUSE HOL_WH SET WAREHOUSE_SIZE = XLARGE WAIT_FOR_COMPLETION = TRUE').collect()
-
     source = session.table('HARMONIZED.POS_FLATTENED_V_STREAM')
     target = session.table('HARMONIZED.ORDERS')
 
@@ -42,6 +41,10 @@ def merge_order_updates(session):
     _ = session.sql('ALTER WAREHOUSE HOL_WH SET WAREHOUSE_SIZE = XSMALL').collect()
 
 def main(session: Session) -> str:
+
+    # Set the database
+   # _ = session.sql('USE DATABASE HOL_DB;').collect()
+
     # Create the ORDERS table and ORDERS_STREAM stream if they don't exist
     if not table_exists(session, schema='HARMONIZED', name='ORDERS'):
         create_orders_table(session)
@@ -60,6 +63,8 @@ if __name__ == '__main__':
     # Create a local Snowpark session
     with Session.builder.getOrCreate() as session:
         import sys
+        session.use_database('HOL_DB')
+        session.use_role('HOL_ROLE')
         if len(sys.argv) > 1:
             print(main(session, *sys.argv[1:]))  # type: ignore
         else:
